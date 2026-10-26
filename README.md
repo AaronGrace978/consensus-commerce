@@ -10,7 +10,13 @@ Buyer, Seller, and a Fairness referee agent haggle in public rounds. The referee
 
 ![Consensus Commerce hero poster](docs/screenshots/01-hero-poster.png)
 
-![1920px live dashboard after a settled deal](docs/screenshots/02-dashboard-1920.png)
+![1920px live negotiation feed](docs/screenshots/02-negotiation-feed.png)
+
+![1920px PayPal checkout after a settled deal](docs/screenshots/03-paypal-checkout.png)
+
+![1920px proof-of-fairness receipt](docs/screenshots/04-receipt-certificate.png)
+
+A 67-second silent walkthrough of one Leica M6 run is in [docs/demo/consensus-demo.mp4](docs/demo/consensus-demo.mp4).
 
 ---
 
@@ -54,8 +60,9 @@ consensus-commerce/
 │   ├── paypal/
 │   │   └── adapter.py             # Orders v2 create+capture, or simulation
 │   └── tests/test_engine.py
-├── public/                        # Dark judge dashboard (1920 + 1366)
-└── docs/screenshots/01-hero-poster.png
+├── public/                        # Light PayPal checkout (1920 + 1366)
+├── docs/demo/consensus-demo.mp4   # 1920×1080 Devpost walkthrough
+└── docs/screenshots/              # Hero, feed, checkout, receipt
 ```
 
 ### Negotiation protocol
