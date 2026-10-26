@@ -1,6 +1,4 @@
 (() => {
-  const CIRC = 2 * Math.PI * 50;
-
   const state = {
     catalog: [],
     itemId: "leica-m6",
@@ -161,7 +159,7 @@
     const current = n <= 0 ? null : rounds.find((r) => r.round === Math.min(n, 5));
 
     $("round-count-value").textContent = `${Math.max(0, n)} / 5`;
-    $("active-round-indicator").textContent = `ROUND ${Math.max(0, n)} / 5`;
+    $("active-round-indicator").textContent = `Round ${Math.max(0, n)} of 5`;
     document.querySelectorAll(".step-btn").forEach((btn) => {
       const step = Number(btn.dataset.step);
       btn.classList.toggle("active", step <= n);
@@ -170,22 +168,26 @@
 
     const stream = $("protocol-stream");
     stream.innerHTML = visible
-      .flatMap((round) =>
-        round.messages.map((msg) => {
-          const metrics = (msg.metricsCited || [])
-            .map((m) => `<span class="msg-metric">${m.label}: <strong>${esc(m.value)}</strong></span>`)
-            .join("");
-          return `<article class="msg-card stance-${esc(msg.stance)}">
-            <div class="msg-meta">
-              <span class="msg-agent ${esc(msg.agentId)}">${esc(msg.agentId)}</span>
-              <span>${esc(msg.stance)} · ${esc(msg.action)}</span>
-            </div>
-            <div class="msg-headline">${esc(msg.headline)}</div>
-            <p class="msg-body">${esc(msg.message)}</p>
-            <div class="msg-metrics">${metrics}</div>
-          </article>`;
-        })
-      )
+      .map((round) => {
+        const bubbles = round.messages
+          .map((msg) => {
+            const side = msg.agentId === "BUYER" ? "buyer" : msg.agentId === "SELLER" ? "seller" : "referee";
+            const who = side === "buyer" ? "Buyer" : side === "seller" ? "Seller" : "Referee";
+            const metrics = (msg.metricsCited || [])
+              .map((m) => `<span class="msg-metric">${esc(m.label)} <strong>${esc(m.value)}</strong></span>`)
+              .join("");
+            return `<div class="bubble-row ${side}">
+              <article class="bubble bubble-${side} stance-${esc(msg.stance)}">
+                <div class="bubble-who">${who} · ${esc(msg.stance)}</div>
+                <div class="bubble-headline">${esc(msg.headline)}</div>
+                <p class="bubble-body">${esc(msg.message)}</p>
+                <div class="bubble-metrics">${metrics}</div>
+              </article>
+            </div>`;
+          })
+          .join("");
+        return `<div class="round-pill">Round ${round.round} of 5</div>${bubbles}`;
+      })
       .join("");
     stream.scrollTop = stream.scrollHeight;
 
@@ -196,7 +198,7 @@
 
     const scores = current.scores;
     const split = scores.surplusSplit;
-    $("jain-value").textContent = scores.jainFairnessIndex.toFixed(3);
+    $("jain-value").textContent = `Jain ${scores.jainFairnessIndex.toFixed(4)}`;
     setRing(scores.jainFairnessIndex);
     $("consensus-score-value").textContent = `${scores.consensusScore}`;
     $("nash-index-value").textContent = `${scores.nashBargainingIndex}`;
@@ -225,13 +227,13 @@
 
     const pill = $("consensus-status-pill");
     if (n < 4) {
-      pill.textContent = current.status.includes("VETO") ? "VETOED" : "IN PLAY";
+      pill.textContent = current.status.includes("VETO") ? "Vetoed" : "In play";
       pill.className = current.status.includes("VETO") ? "status-pill veto" : "status-pill live";
     } else if (n === 4) {
-      pill.textContent = "CONSENSUS";
+      pill.textContent = "Consensus";
       pill.className = "status-pill ok";
     } else {
-      pill.textContent = "SETTLED";
+      pill.textContent = "Settled";
       pill.className = "status-pill ok";
     }
 
@@ -255,7 +257,7 @@
   }
 
   function resetMeters() {
-    $("jain-value").textContent = "—";
+    $("jain-value").textContent = "Jain —";
     setRing(0);
     ["buyer", "seller", "referee"].forEach((k) => setAgent(k, 0, "IDLE", "—"));
   }
@@ -281,20 +283,17 @@
   }
 
   function setRing(jain) {
-    const offset = CIRC * (1 - Math.max(0, Math.min(1, jain)));
-    $("jain-ring-fill").style.strokeDashoffset = String(offset);
+    const bar = $("jain-bar-fill");
+    if (bar) bar.style.width = `${Math.max(0, Math.min(1, Number(jain) || 0)) * 100}%`;
   }
 
   function placeMarkers(item, price) {
     const min = item.sellerReservation;
     const max = item.listPrice;
     const span = Math.max(1, max - min);
-    const pos = (v) => `${8 + ((v - min) / span) * 84}%`;
-    $("mark-floor").style.left = pos(item.sellerReservation);
-    $("mark-ask").style.left = pos(item.sellerAsk);
-    $("mark-bid").style.left = pos(item.buyerTarget);
-    $("mark-now").style.left = pos(price);
-    $("mark-now").querySelector("span").textContent = money(price, item.currency);
+    const now = Math.max(0, Math.min(1, (price - min) / span));
+    const rail = $("rail-glow");
+    if (rail) rail.style.width = `${now * 100}%`;
   }
 
   function openCert() {
@@ -309,18 +308,36 @@
     }
     const cert = result.certificate;
     const settle = result.settlement || {};
-    $("modal-proof-summary").innerHTML = [
-      ["Certificate", cert.certificateId],
-      ["SHA-256", cert.sha256Hash],
-      ["Final price", money(cert.finalPrice, cert.currency)],
+    const terms = result.finalDeal.terms || {};
+    const lines = [
+      ["Item", result.item.title],
+      ["Price", money(cert.finalPrice, cert.currency)],
+      ["Surplus", money(cert.surplusSplit.surplus, cert.currency)],
+      ["Buyer share", pct(cert.surplusSplit.buyer)],
+      ["Seller share", pct(cert.surplusSplit.seller)],
       ["Jain index", cert.jainFairnessIndex.toFixed(4)],
-      ["Buyer / seller split", `${pct(cert.surplusSplit.buyer)} / ${pct(cert.surplusSplit.seller)}`],
       ["Rounds", String(cert.roundCount)],
+      ["Shipping", `${terms.shippingDays} days`],
+      ["Warranty", `${terms.warrantyMonths} mo`],
+      ["Returns", `${terms.returnDays} days`],
       ["PayPal order", settle.orderId || "—"],
-      ["PayPal status", settle.status || "—"],
-    ]
-      .map(([k, v]) => `<div class="proof-cell"><span>${esc(k)}</span><strong class="mono">${esc(v)}</strong></div>`)
-      .join("");
+      ["Capture", settle.captureId || "—"],
+      ["Status", settle.status || "—"],
+    ];
+    $("modal-proof-summary").innerHTML =
+      lines
+        .map(
+          ([k, v]) =>
+            `<div class="receipt-line"><span>${esc(k)}</span><strong>${esc(v)}</strong></div>`
+        )
+        .join("") +
+      `<div class="receipt-total"><span>AMOUNT</span><strong>${esc(money(cert.finalPrice, cert.currency))}</strong></div>`;
+    const stamp = $("paid-stamp");
+    if (stamp) stamp.textContent = settle.status === "COMPLETED" ? "PAID" : settle.status || "OPEN";
+    const certId = $("receipt-cert-id");
+    if (certId) certId.textContent = cert.certificateId;
+    const hash = $("receipt-hash");
+    if (hash) hash.textContent = cert.sha256Hash;
     $("modal-json-viewer").textContent = JSON.stringify(cert, null, 2);
     $("cert-modal-backdrop").classList.remove("hidden");
   }

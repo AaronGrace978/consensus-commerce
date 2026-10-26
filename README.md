@@ -135,13 +135,13 @@ python app.py
 
 ## Dashboard
 
-Dark, judge-ready, **1920px-safe and 1366px-safe** (header wraps, no clipped action buttons, columns shrink with `minmax(0, 1fr)`).
+Light PayPal checkout, **1920px-safe and 1366px-safe** (header wraps, no clipped action buttons).
 
-- Live 5-round protocol feed with agent stance cards
-- Surplus-split bar and Jain fairness gauge
-- Glowing consensus deal-line from seller floor → ask / bid → clearing price
-- Deal-accepted panel with PayPal order id + status
-- Certificate drawer with the full SHA-256
+- Chat-style 5-round feed: Buyer left, Seller right, Referee centered
+- Agent stance cards and surplus-split bar
+- Horizontal Jain index bar with a numeric badge
+- PayPal checkout card with order id, green COMPLETED chip, and capture id
+- Printed proof-of-fairness receipt with a PAID stamp and the SHA-256
 
 ---
 

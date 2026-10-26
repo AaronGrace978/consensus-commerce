@@ -3,105 +3,214 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Consensus Commerce — Multi-agent deals, proven PayPal settlement</title>
+  <title>Consensus Commerce — Every deal fair. Every payment proven.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=light2" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-cluster">
-        <div class="brand-logo" aria-hidden="true">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="13" stroke="#10b981" stroke-width="2" stroke-dasharray="3 2" />
-            <path d="M8 17h16" stroke="#10b981" stroke-width="2" />
-            <circle cx="10" cy="17" r="2.2" fill="#22d3ee" />
-            <circle cx="16" cy="17" r="2.4" fill="#10b981" />
-            <circle cx="22" cy="17" r="2.2" fill="#f59e0b" />
-          </svg>
+        <div class="brand-mark" aria-hidden="true">
+          <span class="mark-a"></span>
+          <span class="mark-b"></span>
         </div>
         <div class="brand-copy">
           <div class="brand-title-row">
-            <h1 class="brand-title">CONSENSUS COMMERCE</h1>
+            <h1 class="brand-title">Consensus Commerce</h1>
             <span class="challenge-badge">PayPal AI Hackathon</span>
           </div>
-          <p class="brand-tagline">Every deal fair. <strong>Every payment proven.</strong></p>
+          <p class="brand-tagline">Every deal fair. Every payment proven.</p>
         </div>
       </div>
 
       <div class="mode-cluster">
-        <span class="mode-eyebrow">PayPal adapter</span>
+        <span class="mode-eyebrow">Adapter</span>
         <span id="paypal-mode-pill" class="mode-pill mode-sim">SANDBOX SIMULATION</span>
       </div>
 
       <div class="mission-controls">
-        <div class="control-group grow">
-          <label for="item-select">Marketplace listing</label>
+        <label class="control-group grow" for="item-select">
+          <span>Listing</span>
           <select id="item-select" class="control-select"></select>
-        </div>
+        </label>
       </div>
 
       <div class="action-buttons">
-        <button id="btn-run-live" class="btn btn-primary" type="button">
-          <span class="btn-icon">▶</span> Run Live Negotiation
-        </button>
-        <button id="btn-step-round" class="btn btn-secondary" type="button">Step Round</button>
-        <button id="btn-view-cert" class="btn btn-outline" type="button">Certificate</button>
+        <button id="btn-run-live" class="btn btn-gold" type="button">Run negotiation</button>
+        <button id="btn-step-round" class="btn btn-secondary" type="button">Step</button>
+        <button id="btn-view-cert" class="btn btn-primary" type="button">Receipt</button>
       </div>
     </header>
 
-    <main class="workspace-grid">
-      <aside class="panel left-panel">
-        <section class="gauge-card">
-          <div class="hero-card-header">
-            <span class="section-eyebrow">Fairness gauge</span>
-            <span id="consensus-status-pill" class="status-pill">STANDBY</span>
+    <main class="workspace">
+      <aside class="col col-order">
+        <section class="card listing-card">
+          <div class="card-kicker">Order summary</div>
+          <div class="listing-sku" id="listing-sku">—</div>
+          <h2 class="listing-title" id="listing-title">Select a listing</h2>
+          <p class="listing-blurb" id="listing-blurb">Buyer, Seller, and the Fairness Referee negotiate in the open.</p>
+          <dl class="listing-meta">
+            <div><dt>List</dt><dd id="listing-list" class="mono">—</dd></div>
+            <div><dt>Seller floor</dt><dd id="listing-floor" class="mono">—</dd></div>
+            <div><dt>Buyer ceiling</dt><dd id="listing-ceil" class="mono">—</dd></div>
+          </dl>
+        </section>
+
+        <section class="card price-card">
+          <div class="section-header-row">
+            <h2 class="section-title">Offer</h2>
+            <span id="price-now" class="price-now mono">—</span>
           </div>
-          <div class="score-dial-row">
-            <div class="score-ring-wrapper">
-              <svg class="score-ring" viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="score-ring-bg" cx="60" cy="60" r="50" />
-                <circle id="jain-ring-fill" class="score-ring-fill" cx="60" cy="60" r="50" />
-              </svg>
-              <div class="score-ring-center">
-                <span id="jain-value" class="score-number">—</span>
-                <span class="score-max">Jain</span>
-              </div>
+          <div class="rail-wrap" id="price-rail">
+            <div class="rail-track">
+              <div class="rail-fill" id="rail-glow"></div>
             </div>
-            <div class="fairness-submetrics">
-              <div class="submetric-item">
-                <span class="submetric-label">Consensus score</span>
-                <strong id="consensus-score-value" class="submetric-value mono">—</strong>
-              </div>
-              <div class="submetric-item">
-                <span class="submetric-label">Nash product</span>
-                <strong id="nash-index-value" class="submetric-value mono">—</strong>
-              </div>
-              <div class="submetric-item">
-                <span class="submetric-label">Rounds</span>
-                <strong id="round-count-value" class="submetric-value mono">0 / 5</strong>
-              </div>
-            </div>
+            <span class="rail-marker marker-floor" id="mark-floor"><span>Floor</span></span>
+            <span class="rail-marker marker-bid" id="mark-bid"><span>Bid</span></span>
+            <span class="rail-marker marker-ask" id="mark-ask"><span>Ask</span></span>
+            <span class="rail-marker marker-now" id="mark-now"><span>Now</span></span>
           </div>
-          <div class="baseline-vs-consensus-strip">
-            <div class="strip-col">
-              <span class="strip-label">R1 opening Jain</span>
-              <span id="strip-r1-jain" class="strip-val danger mono">—</span>
-            </div>
-            <div class="strip-arrow">→</div>
-            <div class="strip-col">
-              <span class="strip-label">R4 consensus Jain</span>
-              <span id="strip-r4-jain" class="strip-val success mono">—</span>
-            </div>
+          <div class="rail-labels">
+            <span id="rail-min" class="mono">—</span>
+            <span id="rail-max" class="mono">—</span>
+          </div>
+          <div class="terms-row" id="terms-row">
+            <div class="term-chip"><span>Ship</span><strong id="term-ship" class="mono">—</strong></div>
+            <div class="term-chip"><span>Warranty</span><strong id="term-war" class="mono">—</strong></div>
+            <div class="term-chip"><span>Returns</span><strong id="term-ret" class="mono">—</strong></div>
           </div>
         </section>
 
-        <section class="surplus-card">
+        <section class="card agents-card">
+          <div class="section-header-row">
+            <h2 class="section-title">Stances</h2>
+            <span id="active-round-indicator" class="round-tag">Round 0 of 5</span>
+          </div>
+
+          <article class="agent-card agent-buyer" id="card-agent-buyer">
+            <div class="agent-card-top">
+              <div>
+                <h3 class="agent-name">Buyer</h3>
+                <span class="agent-role">Price and terms</span>
+              </div>
+              <div class="agent-score-box">
+                <span id="util-buyer" class="agent-util-num mono">—</span>
+                <span class="agent-util-unit">/100</span>
+              </div>
+            </div>
+            <div class="progress-track"><div id="bar-buyer" class="progress-fill fill-buyer"></div></div>
+            <div class="agent-kpis">
+              <div class="kpi-pill"><span>Stance</span><strong id="kpi-buyer-stance">IDLE</strong></div>
+              <div class="kpi-pill"><span>Share</span><strong id="kpi-buyer-share" class="mono">—</strong></div>
+            </div>
+          </article>
+
+          <article class="agent-card agent-seller" id="card-agent-seller">
+            <div class="agent-card-top">
+              <div>
+                <h3 class="agent-name">Seller</h3>
+                <span class="agent-role">Margin and fulfillment</span>
+              </div>
+              <div class="agent-score-box">
+                <span id="util-seller" class="agent-util-num mono">—</span>
+                <span class="agent-util-unit">/100</span>
+              </div>
+            </div>
+            <div class="progress-track"><div id="bar-seller" class="progress-fill fill-seller"></div></div>
+            <div class="agent-kpis">
+              <div class="kpi-pill"><span>Stance</span><strong id="kpi-seller-stance">IDLE</strong></div>
+              <div class="kpi-pill"><span>Share</span><strong id="kpi-seller-share" class="mono">—</strong></div>
+            </div>
+          </article>
+
+          <article class="agent-card agent-referee" id="card-agent-referee">
+            <div class="agent-card-top">
+              <div>
+                <h3 class="agent-name">Referee</h3>
+                <span class="agent-role">Jain index and veto</span>
+              </div>
+              <div class="agent-score-box">
+                <span id="util-referee" class="agent-util-num mono">—</span>
+                <span class="agent-util-unit">/100</span>
+              </div>
+            </div>
+            <div class="progress-track"><div id="bar-referee" class="progress-fill fill-referee"></div></div>
+            <div class="agent-kpis">
+              <div class="kpi-pill"><span>Stance</span><strong id="kpi-referee-stance">IDLE</strong></div>
+              <div class="kpi-pill"><span>Vetoes</span><strong id="kpi-referee-vetoes" class="mono">0</strong></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="card weights-card">
+          <div class="section-header-row">
+            <h2 class="section-title">Weights</h2>
+            <button id="btn-reset-weights" class="btn-link" type="button">Reset</button>
+          </div>
+          <label class="slider-row">
+            <span class="slider-label-line"><span>Buyer</span><strong id="val-weight-buyer" class="mono">34%</strong></span>
+            <input type="range" id="slider-buyer" min="15" max="65" value="34" class="weight-slider buyer-slider" />
+          </label>
+          <label class="slider-row">
+            <span class="slider-label-line"><span>Seller</span><strong id="val-weight-seller" class="mono">34%</strong></span>
+            <input type="range" id="slider-seller" min="15" max="65" value="34" class="weight-slider seller-slider" />
+          </label>
+          <label class="slider-row">
+            <span class="slider-label-line"><span>Referee</span><strong id="val-weight-referee" class="mono">32%</strong></span>
+            <input type="range" id="slider-referee" min="15" max="65" value="32" class="weight-slider referee-slider" />
+          </label>
+        </section>
+      </aside>
+
+      <section class="col col-chat">
+        <div class="chat-head">
+          <div>
+            <div class="card-kicker">Live negotiation</div>
+            <h2 class="section-title">Buyer, Seller, Referee</h2>
+          </div>
+          <span id="protocol-sku" class="sku-pill mono">—</span>
+        </div>
+        <div class="round-stepper" id="round-stepper">
+          <button class="step-btn" data-step="1" type="button">1 Ask</button>
+          <button class="step-btn" data-step="2" type="button">2 Bid</button>
+          <button class="step-btn" data-step="3" type="button">3 Fair</button>
+          <button class="step-btn" data-step="4" type="button">4 Nash</button>
+          <button class="step-btn" data-step="5" type="button">5 Pay</button>
+        </div>
+        <div id="protocol-stream" class="protocol-stream" aria-live="polite"></div>
+      </section>
+
+      <aside class="col col-pay">
+        <section class="card fairness-card">
+          <div class="section-header-row">
+            <h2 class="section-title">Fairness</h2>
+            <span id="consensus-status-pill" class="status-pill">Standby</span>
+          </div>
+          <div class="jain-row">
+            <div class="jain-track" aria-hidden="true">
+              <div id="jain-bar-fill" class="jain-fill"></div>
+            </div>
+            <span id="jain-value" class="jain-badge mono">—</span>
+          </div>
+          <div class="fairness-metrics">
+            <div><span>Consensus</span><strong id="consensus-score-value" class="mono">—</strong></div>
+            <div><span>Nash</span><strong id="nash-index-value" class="mono">—</strong></div>
+            <div><span>Round</span><strong id="round-count-value" class="mono">0 / 5</strong></div>
+          </div>
+          <div class="jain-compare">
+            <span>Opening <strong id="strip-r1-jain" class="mono">—</strong></span>
+            <span class="jain-arrow">to</span>
+            <span>Consensus <strong id="strip-r4-jain" class="mono">—</strong></span>
+          </div>
+        </section>
+
+        <section class="card surplus-card">
           <div class="section-header-row">
             <h2 class="section-title">Surplus split</h2>
-            <span id="surplus-total" class="mono muted">$0.00</span>
+            <span id="surplus-total" class="mono surplus-total">$0.00</span>
           </div>
           <div class="split-track" aria-hidden="true">
             <div id="bar-buyer-split" class="split-fill split-buyer" style="width:50%"></div>
@@ -113,214 +222,81 @@
           </div>
         </section>
 
-        <section class="agents-section">
-          <div class="section-header-row">
-            <h2 class="section-title">Agent stances</h2>
-            <span id="active-round-indicator" class="round-tag mono">ROUND 0 / 5</span>
+        <section id="accepted-banner" class="checkout-card hidden">
+          <div class="checkout-head">
+            <span class="pp-wordmark">PayPal</span>
+            <span class="checkout-kicker">Checkout</span>
           </div>
-
-          <article class="agent-card agent-buyer" id="card-agent-buyer">
-            <div class="agent-card-top">
-              <div class="agent-id-group">
-                <span class="agent-dot buyer-dot"></span>
-                <div>
-                  <h3 class="agent-name">Buyer Agent</h3>
-                  <span class="agent-role">Procurement · price + terms</span>
-                </div>
-              </div>
-              <div class="agent-score-box">
-                <span id="util-buyer" class="agent-util-num mono">—</span>
-                <span class="agent-util-unit">/100</span>
-              </div>
+          <div class="checkout-body">
+            <div class="checkout-label">Amount</div>
+            <h3 id="accepted-price" class="checkout-amount mono">—</h3>
+            <div class="checkout-line">
+              <span>Order</span>
+              <strong id="pp-order-id" class="mono">—</strong>
             </div>
-            <div class="progress-track"><div id="bar-buyer" class="progress-fill fill-buyer" style="width:0%"></div></div>
-            <div class="agent-kpis">
-              <div class="kpi-pill"><span>Stance</span><strong id="kpi-buyer-stance" class="stance-text">IDLE</strong></div>
-              <div class="kpi-pill"><span>Share</span><strong id="kpi-buyer-share" class="mono">—</strong></div>
+            <div class="checkout-line">
+              <span>Status</span>
+              <strong id="pp-order-status" class="status-chip">—</strong>
             </div>
-          </article>
-
-          <article class="agent-card agent-seller" id="card-agent-seller">
-            <div class="agent-card-top">
-              <div class="agent-id-group">
-                <span class="agent-dot seller-dot"></span>
-                <div>
-                  <h3 class="agent-name">Seller Agent</h3>
-                  <span class="agent-role">Revenue · margin + fulfillment</span>
-                </div>
-              </div>
-              <div class="agent-score-box">
-                <span id="util-seller" class="agent-util-num mono">—</span>
-                <span class="agent-util-unit">/100</span>
-              </div>
+            <div class="checkout-line">
+              <span>Capture</span>
+              <strong id="pp-capture-id" class="mono">—</strong>
             </div>
-            <div class="progress-track"><div id="bar-seller" class="progress-fill fill-seller" style="width:0%"></div></div>
-            <div class="agent-kpis">
-              <div class="kpi-pill"><span>Stance</span><strong id="kpi-seller-stance" class="stance-text">IDLE</strong></div>
-              <div class="kpi-pill"><span>Share</span><strong id="kpi-seller-share" class="mono">—</strong></div>
+            <div class="checkout-line">
+              <span>Mode</span>
+              <strong id="pp-mode" class="mono">—</strong>
             </div>
-          </article>
-
-          <article class="agent-card agent-referee" id="card-agent-referee">
-            <div class="agent-card-top">
-              <div class="agent-id-group">
-                <span class="agent-dot referee-dot"></span>
-                <div>
-                  <h3 class="agent-name">Fairness Referee</h3>
-                  <span class="agent-role">Jain index · veto · certificate</span>
-                </div>
-              </div>
-              <div class="agent-score-box">
-                <span id="util-referee" class="agent-util-num mono">—</span>
-                <span class="agent-util-unit">/100</span>
-              </div>
-            </div>
-            <div class="progress-track"><div id="bar-referee" class="progress-fill fill-referee" style="width:0%"></div></div>
-            <div class="agent-kpis">
-              <div class="kpi-pill"><span>Stance</span><strong id="kpi-referee-stance" class="stance-text">IDLE</strong></div>
-              <div class="kpi-pill"><span>Vetoes</span><strong id="kpi-referee-vetoes" class="mono">0</strong></div>
-            </div>
-          </article>
-        </section>
-
-        <section class="weights-card">
-          <div class="section-header-row">
-            <h2 class="section-title">Bargaining weights</h2>
-            <button id="btn-reset-weights" class="btn-link" type="button">Reset</button>
-          </div>
-          <div class="slider-row">
-            <div class="slider-label-line"><span>Buyer w_B</span><strong id="val-weight-buyer" class="mono">34%</strong></div>
-            <input type="range" id="slider-buyer" min="15" max="65" value="34" class="weight-slider buyer-slider" />
-          </div>
-          <div class="slider-row">
-            <div class="slider-label-line"><span>Seller w_S</span><strong id="val-weight-seller" class="mono">34%</strong></div>
-            <input type="range" id="slider-seller" min="15" max="65" value="34" class="weight-slider seller-slider" />
-          </div>
-          <div class="slider-row">
-            <div class="slider-label-line"><span>Referee w_R</span><strong id="val-weight-referee" class="mono">32%</strong></div>
-            <input type="range" id="slider-referee" min="15" max="65" value="32" class="weight-slider referee-slider" />
+            <p id="pp-note" class="checkout-note">Waiting for settlement.</p>
           </div>
         </section>
-      </aside>
 
-      <section class="center-stage">
-        <div class="deal-stage">
-          <div class="listing-card">
-            <div class="listing-kicker" id="listing-sku">CC-CAM-M6</div>
-            <h2 class="listing-title" id="listing-title">Select a listing</h2>
-            <p class="listing-blurb" id="listing-blurb">Buyer, Seller, and the Fairness Referee negotiate in public rounds.</p>
-            <div class="listing-meta">
-              <div><span>List</span><strong id="listing-list" class="mono">—</strong></div>
-              <div><span>Seller floor</span><strong id="listing-floor" class="mono">—</strong></div>
-              <div><span>Buyer ceiling</span><strong id="listing-ceil" class="mono">—</strong></div>
+        <section class="receipt-stub">
+          <div class="stub-zig"></div>
+          <div class="stub-paper">
+            <div class="stub-merchant">CONSENSUS COMMERCE</div>
+            <div class="stub-line"><span>CERT</span><strong id="cert-id-display" class="mono">—</strong></div>
+            <div class="stub-line stub-hash-line">
+              <span>SHA-256</span>
+              <code id="cert-hash-display" class="mono stub-hash">—</code>
             </div>
+            <button id="btn-open-cert-footer" class="btn btn-cert-full" type="button">Open receipt</button>
           </div>
-
-          <div class="price-rail-card">
-            <div class="section-header-row">
-              <h2 class="section-title">Consensus deal-line</h2>
-              <span id="price-now" class="mono price-now">—</span>
-            </div>
-            <div class="price-rail" id="price-rail">
-              <div class="rail-track">
-                <div class="rail-glow" id="rail-glow"></div>
-                <button type="button" class="rail-marker marker-floor" id="mark-floor" disabled><span>Floor</span></button>
-                <button type="button" class="rail-marker marker-ask" id="mark-ask" disabled><span>Ask</span></button>
-                <button type="button" class="rail-marker marker-bid" id="mark-bid" disabled><span>Bid</span></button>
-                <button type="button" class="rail-marker marker-now" id="mark-now" disabled><span>Now</span></button>
-              </div>
-              <div class="rail-labels">
-                <span id="rail-min" class="mono">—</span>
-                <span id="rail-max" class="mono">—</span>
-              </div>
-            </div>
-            <div class="terms-row" id="terms-row">
-              <div class="term-chip"><span>Shipping</span><strong id="term-ship" class="mono">—</strong></div>
-              <div class="term-chip"><span>Warranty</span><strong id="term-war" class="mono">—</strong></div>
-              <div class="term-chip"><span>Returns</span><strong id="term-ret" class="mono">—</strong></div>
-            </div>
-          </div>
-
-          <div id="accepted-banner" class="accepted-banner hidden">
-            <div class="accepted-kicker">Deal accepted</div>
-            <h3 id="accepted-price" class="accepted-price mono">—</h3>
-            <div class="accepted-grid">
-              <div>
-                <span>PayPal order</span>
-                <strong id="pp-order-id" class="mono">—</strong>
-              </div>
-              <div>
-                <span>Status</span>
-                <strong id="pp-order-status" class="mono">—</strong>
-              </div>
-              <div>
-                <span>Capture</span>
-                <strong id="pp-capture-id" class="mono">—</strong>
-              </div>
-              <div>
-                <span>Mode</span>
-                <strong id="pp-mode" class="mono">—</strong>
-              </div>
-            </div>
-            <p id="pp-note" class="accepted-note">Waiting for settlement…</p>
-          </div>
-        </div>
-      </section>
-
-      <aside class="panel right-panel">
-        <div class="protocol-header">
-          <div>
-            <span class="section-eyebrow">Transparent negotiation log</span>
-            <h2 class="section-title">Protocol feed</h2>
-          </div>
-          <span id="protocol-sku" class="corridor-code-badge mono">—</span>
-        </div>
-        <div class="round-stepper" id="round-stepper">
-          <button class="step-btn" data-step="1" type="button"><span class="step-num">R1</span><span class="step-name">Ask</span></button>
-          <button class="step-btn" data-step="2" type="button"><span class="step-num">R2</span><span class="step-name">Bid</span></button>
-          <button class="step-btn" data-step="3" type="button"><span class="step-num">R3</span><span class="step-name">Fair</span></button>
-          <button class="step-btn" data-step="4" type="button"><span class="step-num">R4</span><span class="step-name">Nash</span></button>
-          <button class="step-btn" data-step="5" type="button"><span class="step-num">R5</span><span class="step-name">Pay</span></button>
-        </div>
-        <div id="protocol-stream" class="protocol-stream"></div>
-
-        <div class="crypto-footer">
-          <div class="crypto-footer-row">
-            <span class="crypto-label">CERT</span>
-            <strong id="cert-id-display" class="mono text-emerald">—</strong>
-          </div>
-          <div class="crypto-footer-row">
-            <span class="crypto-label">SHA-256</span>
-            <code id="cert-hash-display" class="crypto-hash mono">—</code>
-          </div>
-          <button id="btn-open-cert-footer" class="btn btn-cert-full" type="button">
-            Open proof-of-fairness certificate
-          </button>
-        </div>
+        </section>
       </aside>
     </main>
   </div>
 
   <div id="cert-modal-backdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <span class="section-eyebrow">SHA-256 proof of fairness</span>
-          <h2 id="modal-title" class="modal-title">Auditable consensus certificate</h2>
-        </div>
+    <div class="modal-sheet">
+      <div class="modal-toolbar">
+        <h2 id="modal-title" class="modal-title">Proof of fairness</h2>
         <div class="modal-actions">
           <button id="btn-download-json" class="btn btn-primary" type="button">Download JSON</button>
           <button id="btn-close-modal" class="btn btn-secondary" type="button">Close</button>
         </div>
       </div>
-      <div class="modal-body">
-        <div id="modal-proof-summary" class="modal-proof-summary"></div>
-        <h3 class="modal-subtitle">Signed payload</h3>
-        <pre id="modal-json-viewer" class="modal-json-viewer mono"></pre>
-      </div>
+      <article class="receipt">
+        <div class="zig zig-top" aria-hidden="true"></div>
+        <div class="receipt-paper">
+          <div id="paid-stamp" class="paid-stamp">PAID</div>
+          <div class="receipt-merchant">CONSENSUS COMMERCE</div>
+          <div class="receipt-kind">PROOF OF FAIRNESS</div>
+          <div id="receipt-cert-id" class="receipt-id mono">—</div>
+          <div class="receipt-rule"></div>
+          <div id="modal-proof-summary" class="receipt-lines"></div>
+          <div class="receipt-rule"></div>
+          <div class="receipt-hash-label">SHA-256</div>
+          <p id="receipt-hash" class="receipt-hash mono">—</p>
+          <details class="receipt-audit">
+            <summary>Signed payload</summary>
+            <pre id="modal-json-viewer" class="receipt-json mono"></pre>
+          </details>
+        </div>
+        <div class="zig zig-bottom" aria-hidden="true"></div>
+      </article>
     </div>
   </div>
 
-  <script src="/app.js"></script>
+  <script src="/app.js?v=light2"></script>
 </body>
 </html>
